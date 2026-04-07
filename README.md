@@ -1,4 +1,14 @@
- 
+[FORK INFO]
+
+Adds JPEG-XL(JXL) support to IIB
+
+Support for Forge Neo (only one tested)
+
+If encountering problems updating. Try a fresh install of the extension and load your latest database.
+
+[ORIGINAL REPO]
+
+> 🌍 i18n Advisory: Some translations may be incomplete or inaccurate. Pull requests are welcome for improvements!
 
 > ✨ **New from the same author**: [SpindleStudio](https://github.com/zanllp/SpindleStudio) — a Threads-style parallel image generation studio. Its images carry SD WebUI–compatible metadata and are indexed by IIB out of the box.
 
