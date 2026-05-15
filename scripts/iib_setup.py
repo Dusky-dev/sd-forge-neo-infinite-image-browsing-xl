@@ -1,10 +1,8 @@
 from scripts.iib.api import infinite_image_browsing_api, send_img_path
-from modules import script_callbacks, infotext_utils as send
 from modules import script_callbacks
 try:
-    from modules import script_callbacks, generation_parameters_copypaste as send
+    from modules import generation_parameters_copypaste as send
 except ImportError:
-    from modules import script_callbacks
     import modules.infotext_utils as send
 
 from scripts.iib.tool import locale
@@ -14,6 +12,7 @@ from scripts.iib.logger import logger
 
 from fastapi import FastAPI
 import gradio as gr
+from modules.shared import cmd_opts
 from modules.shared import cmd_opts
 
 """
