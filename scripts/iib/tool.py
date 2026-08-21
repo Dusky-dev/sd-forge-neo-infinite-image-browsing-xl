@@ -172,7 +172,7 @@ def normalize_paths(paths: List[str], base = cwd):
 def to_abs_path(path):
     if not os.path.isabs(path):
         path = os.path.join(os.getcwd(), path)
-    return os.path.normpath(path)
+    return os.path.realpath(path)
 
 
 def get_valid_img_dirs(

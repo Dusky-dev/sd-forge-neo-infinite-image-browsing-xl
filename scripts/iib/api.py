@@ -333,11 +333,12 @@ def infinite_image_browsing_api(app: FastAPI, **kwargs):
             parent_paths = mem["all_scanned_paths"]
             path = to_abs_path(path)
             for parent_path in parent_paths:
+                parent_path = os.path.realpath(parent_path)
                 if len(path) <= len(parent_path):
                     if parent_path.startswith(path):
                         return True
                 else:
-                    if path.startswith(parent_path):
+                    if path.startswith(parent_path + os.sep):
                         return True
         except:
             pass
