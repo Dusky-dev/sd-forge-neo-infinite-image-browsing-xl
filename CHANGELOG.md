@@ -1,6 +1,27 @@
 [跳到中文](#中文)
 # English
 
+## 2026-08-21
+### 🔒 Fix path traversal in is_path_trusted (CWE-22/CWE-59)
+Hardened the trusted-path check used by path operations. `os.path.realpath()` now resolves symlinks before the comparison, and a trailing `os.sep` is added to the `startswith()` check to prevent a prefix-collision bypass.
+
+### ⚡ Faster thumbnail loading & generation
+- Thumbnail loading is faster for large galleries.
+- Thumbnail-generation locking is tightened so unrelated cache keys no longer serialize, and broken/deleted source images return 404 instead of a retried 500.
+
+### 🐛 Fix search dropping images that share the exact same date-time
+Images with an identical `date_time` timestamp were previously omitted from search results; they are now all returned correctly.
+
+### 📚 Docs
+The README now recommends and links SpindleStudio (formerly MuseStudio) from the same author.
+
+## 2026-07-22
+### 🔧 ComfyUI: extract prompts from workflows using custom sampler nodes
+The ComfyUI parser used to locate the sampler node only by `class_type.startswith("KSampler")`, so workflows using a custom sampler (e.g. `ClownsharKSampler`) failed to parse. It now finds the sampler by input signature when no `KSampler*` node matches, resolves prompts generically across intermediate nodes (`FluxGuidance`, `ConditioningZeroOut`, ...), treats `ConditioningZeroOut` as discarding its prompt, and falls back to collecting all `CLIPTextEncode` texts when no sampler-like node exists.
+
+### 🖼️ WebP metadata from the comfyui-image-saver
+WebP images saved with the comfyui-image-saver maintained by Alexopus now display their metadata correctly.
+
 ## 2026-06-23
 ### 🔎 Optional TwelveLabs Marengo embedding backend
 Added an opt-in TwelveLabs Marengo backend for prompt-text embeddings used by topic clustering and semantic search.
@@ -9,6 +30,17 @@ Added an opt-in TwelveLabs Marengo backend for prompt-text embeddings used by to
 - Set `TWELVELABS_API_KEY` to your TwelveLabs key (falls back to `OPENAI_API_KEY` if unset, for backward compatibility); `OPENAI_BASE_URL` is ignored for embeddings.
 - Fully opt-in and non-breaking: the default OpenAI-compatible path is unchanged unless a Marengo model is selected.
 - Requires the optional dependency `twelvelabs>=1.2.8`. Free API key at https://twelvelabs.io .
+
+## 2026-06-09
+### ⚙️ Option to hide the recent-files panel on the startup page
+Added a `showRecentInStartup` global setting (default on) with a toggle in Global Settings under "Other", so you can hide the recent-files panel to save screen space.
+
+## 2026-06-04
+### 🗄️ Fix "too many SQL variables" on large folders
+When scanning folders recursively with more than 999 images, `get_by_image_ids` hit SQLite's default 999-variable limit and failed. Queries are now batched into chunks of 900 to stay safely under it.
+
+### 🧠 JSON schemas for LLM requests
+Added JSON schemas (converted to a llama.cpp grammar) for `tag_graph` and `topic_cluster` LLM requests to enforce valid output, plus a fix for a heap `TypeError` when equal similarity scores tie in prompt search.
 
 ## 2026-05-17
 ### 📊 Trend & Statistics Panel
@@ -831,6 +863,27 @@ Triggered under the same circumstances as above, there will be a button to updat
 
 # 中文
 
+## 2026-08-21
+### 🔒 修复 is_path_trusted 的路径穿越问题（CWE-22/CWE-59）
+加固路径操作所用的可信路径检查。比较前先通过 `os.path.realpath()` 解析符号链接，并在 `startswith()` 判断中追加结尾的 `os.sep`，避免前缀碰撞导致绕过。
+
+### ⚡ 更快地加载与生成缩略图
+- 大型图库的缩略图加载更快。
+- 收紧了缩略图生成的锁，使无关的缓存键不再互相串行；损坏/已删除的源图现在返回 404，而不是被反复重试的 500。
+
+### 🐛 修复搜索遗漏相同时间戳图片的问题
+此前 `date_time` 完全相同的图片在搜索结果中被漏掉；现在会全部正确返回。
+
+### 📚 文档
+README 现在推荐并链接同一作者开发的 SpindleStudio（原 MuseStudio）。
+
+## 2026-07-22
+### 🔧 ComfyUI：从使用自定义采样器节点的 workflow 提取提示词
+此前 ComfyUI 解析器只按 `class_type.startswith("KSampler")` 定位采样器节点，使用自定义采样器（如 `ClownsharKSampler`）的 workflow 会解析失败。现在当没有 `KSampler*` 节点命中时，会按输入签名（positive/negative 条件及典型采样器输入）定位采样器，并跨中间节点（`FluxGuidance`、`ConditioningZeroOut` 等）通用地解析提示词；`ConditioningZeroOut` 被视为丢弃其提示词；若完全不存在类似采样器的节点，则回退为收集所有 `CLIPTextEncode` 文本。
+
+### 🖼️ comfyui-image-saver 保存的 WebP 元数据
+由 Alexopus 维护的 comfyui-image-saver 保存的 WebP 图片，现在能正确显示其元数据。
+
 ## 2026-06-23
 ### 🔎 可选的 TwelveLabs Marengo 向量后端
 为主题聚类与语义搜索所用的提示词文本向量，新增可选的 TwelveLabs Marengo 后端。
@@ -839,6 +892,17 @@ Triggered under the same circumstances as above, there will be a button to updat
 - 设置 `TWELVELABS_API_KEY` 为你的 TwelveLabs Key（未设置时回退到 `OPENAI_API_KEY`，以保持向后兼容）；向量计算会忽略 `OPENAI_BASE_URL`。
 - 完全可选且不影响现有行为：未选择 Marengo 模型时，默认的 OpenAI 兼容路径保持不变。
 - 需要可选依赖 `twelvelabs>=1.2.8`。可在 https://twelvelabs.io 获取免费 API Key。
+
+## 2026-06-09
+### ⚙️ 启动页隐藏最近文件面板的选项
+新增 `showRecentInStartup` 全局设置（默认开启），可在全局设置的 “Other” 下切换，以便不需要该功能的用户隐藏启动页的最近文件面板、节省屏幕空间。
+
+## 2026-06-04
+### 🗄️ 修复大文件夹下 "too many SQL variables" 的问题
+递归扫描超过 999 张图片时，`get_by_image_ids` 会触发 SQLite 默认的 999 个绑定变量上限而失败。现在查询会按 900 个一批进行分批，安全地保持在该上限之下。
+
+### 🧠 为 LLM 请求加入 JSON Schema
+为 `tag_graph` 和 `topic_cluster` 的 LLM 请求加入 JSON Schema（会转换成 llama.cpp grammar）以强制输出合法 JSON；同时修复了提示词搜索结果相似度相等时堆排序抛 `TypeError` 的问题。
 
 ## 2026-05-17
 ### 📊 趋势与统计面板
